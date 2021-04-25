@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <Button layoutX="264.0" layoutY="103.0" mnemonicParsing="false" onAction="#SetToUserLogin" text="User Login" />
+      <Button layoutX="254.0" layoutY="144.0" mnemonicParsing="false" onAction="#SetToSupplierLogin" text="Supplier Login" />
+      <Button layoutX="247.0" layoutY="188.0" mnemonicParsing="false" onAction="#CreateUser" text="Create User login" />
+      <Button layoutX="237.0" layoutY="225.0" mnemonicParsing="false" onAction="#CreateSupplier" text="Create Supplier login" />
+      <Button layoutX="470.0" layoutY="324.0" mnemonicParsing="false" onAction="#ExitApp" text="Exit" />
+   </children>
+</AnchorPane>

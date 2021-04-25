@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <Text layoutX="136.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Orders">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <ListView fx:id="orders" layoutX="63.0" layoutY="57.0" prefHeight="200.0" prefWidth="200.0" />
+      <Button layoutX="484.0" layoutY="320.0" mnemonicParsing="false" onAction="#BackToAccountPage" text="Go back" />
+      <Button layoutX="105.0" layoutY="320.0" mnemonicParsing="false" onAction="#ViewOrderDetails" text="View Order Details" />
+      <Button layoutX="350.0" layoutY="320.0" mnemonicParsing="false" onAction="#DisplayUserOrder" text="Display orders" />
+   </children>
+</AnchorPane>
