@@ -82,6 +82,25 @@ public class Controller {
     @FXML
     Text orderNumber;
 
+    @FXML
+    ListView<String> StockItems = new ListView<String>();
+    @FXML
+    ListView<String> StockItemsAmount = new ListView<String>();
+    @FXML
+    ListView<String> ReservedStockItems = new ListView<String>();
+    @FXML
+    ListView<String> ReservedStockItemsAmount = new ListView<String>();
+
+    @FXML
+    Text InsufficientStock;
+    @FXML
+    Text OrderPlaced;
+
+    @FXML
+    Text OrderCreditCard;
+    @FXML
+    Text OrderDate;
+
     static Customer customer = new Customer();
     static Supplier supplier = new Supplier();
 
@@ -217,10 +236,11 @@ public class Controller {
         scene = new Scene(root);
         stage.setScene(scene);
 
+        /*
         String[] temp = {"Potatoes","Chicken", "Bagels"};
         System.out.println("This");
         ObservableList temp1 = FXCollections.observableArrayList("Potatoes","Chicken", "Bagels");
-        item.getItems().addAll(temp1);
+        item.getItems().addAll(temp1);*/
 
 
     }
@@ -294,14 +314,38 @@ public class Controller {
 
         float tempAmt=0;
 
-        //System.out.println("Works");
+        boolean IschargedMemberShip = false;
+        LinkedList<Order> UserOrders = new LinkedList<>();
+        GetUserOrders temp1 = new GetUserOrders();
+        UserOrders = temp1.getOrder(customer.ID);
 
-        //System.out.println(cart.size());
+        if(UserOrders.size() == 0 ) {
+            for (int i = 0; i < cart.size(); i++) {
+                if(cart.get(i).Name.equals("Premium Membership Charge") ){
+                    IschargedMemberShip = true;
+                }
+            }
+        }
+        else {
+            IschargedMemberShip = true;
+        }
+
+        System.out.println(customer.MembershipType);
+        if(IschargedMemberShip == false && customer.MembershipType.equals("Premium\r")){
+            Item membershipFee = new Item();
+            membershipFee.Name ="Premium Membership Charge";
+            membershipFee.Quantity = "1";
+            membershipFee.PrimaryKey= "0";
+            membershipFee.Description= "Premium Membership Fee";
+            membershipFee.PremiumPrice= "40";
+            membershipFee.RegularPrice= "40";
+            cart.add(membershipFee);
+        }
 
         for (int i = 0; i < cart.size(); i++) {
             cartItem.getItems().add(cart.get(i).Name);
             cartAmount.getItems().add(cart.get(i).Quantity);
-            if(customer.MembershipType.equals("Premium")){
+            if(customer.MembershipType.equals("Premium\r")){
                 int itemAmt, itemPrice;
                 itemAmt = Integer.valueOf(cart.get(i).Quantity);
                 itemPrice = Integer.valueOf(cart.get(i).PremiumPrice);
@@ -326,7 +370,7 @@ public class Controller {
         float tempAmt=0;
         for (int i = 0; i < cart.size(); i++) {
 
-            if(customer.MembershipType.equals("Premium")){
+            if(customer.MembershipType.equals("Premium\r")){
                 int itemAmt, itemPrice;
                 itemAmt = Integer.valueOf(cart.get(i).Quantity);
                 itemPrice = Integer.valueOf(cart.get(i).PremiumPrice);
@@ -351,7 +395,7 @@ public class Controller {
         float tempAmt=0;
         for (int i = 0; i < cart.size(); i++) {
 
-            if(customer.MembershipType.equals("Premium")){
+            if(customer.MembershipType.equals("Premium\r")){
                 int itemAmt, itemPrice;
                 itemAmt = Integer.valueOf(cart.get(i).Quantity);
                 itemPrice = Integer.valueOf(cart.get(i).PremiumPrice);
@@ -396,6 +440,8 @@ public class Controller {
 
         UserOrders = temp.getOrder(customer.ID);
 
+        orders.getItems().clear();
+
         for (int i = 0; i < UserOrders.size(); i++) {
             orders.getItems().add(UserOrders.get(i).orderNo);
         }
@@ -412,8 +458,11 @@ public class Controller {
 
     public void ViewOrderDetails1(javafx.event.ActionEvent actionEvent) throws IOException{
         LinkedList<Order> UserOrders = new LinkedList<>();
-        GetUserOrders temp = new GetUserOrders();
+        Order temp = new Order();
         UserOrders = temp.getOrder(customer.ID);
+
+        orderItems.getItems().clear();
+        orderItemsAmount.getItems().clear();
 
         Order currOrder = new Order();
 
@@ -437,35 +486,346 @@ public class Controller {
 
     }
 
+    public void DeleteOrder(javafx.event.ActionEvent actionEvent) throws IOException {
+        cart.clear();
+        System.out.println("Order deleted!");
+
+        root = FXMLLoader.load(getClass().getResource("ViewCart.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void UpdateCreditCard(javafx.event.ActionEvent actionEvent) throws IOException, InterruptedException {
+        CreditCard temp = new CreditCard();
+
+        String number = CreditCardNo.getText();
+        CreditCard tempVar = new CreditCard();
+        tempVar.CreditLimit = "0";
+        tempVar.CreditCardNo = number;
+        Main.buffer.messageBuffer.add(tempVar);
+        Main.buffer.messageBufferFull = true;
+        int response = 0;
+        while (Main.buffer.responseBufferFull == false) {
+            //wait();
+            Thread.sleep(1000);
+        }
+        response = Main.buffer.responseBuffer.poll();
+        if(response != 0){
+            customer.CreditCardNo = number;
+            System.out.println("credit card no changed");
+            Customer rand = new Customer();
+            rand.updateNumber(customer.ID, number);
+
+            root = FXMLLoader.load(getClass().getResource("ViewCart.fxml"));
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+
+        }
+        else {
+            System.out.println("please try again");
+        }
+        Main.buffer.responseBufferFull = false;
+        Main.buffer.messageBufferFull = false;
+    }
+
     public void MakeOrder(javafx.event.ActionEvent actionEvent) throws IOException, InterruptedException {
         String totalCost = TotalPrice.getText();
         System.out.println("(" + totalCost + ")");
         System.out.println(customer.CreditCardNo);
-        Main.buffer.messageBuffer.add(customer.CreditCardNo);
+
+        CreditCard creditCardToPass = new CreditCard();
+        creditCardToPass.CreditCardNo = customer.CreditCardNo;
+        creditCardToPass.CreditLimit = totalCost;
+
+        Main.buffer.messageBuffer.add(creditCardToPass);
         Main.buffer.messageBufferFull = true;
+        int response = 0;
+        boolean isOrderplaced = false;
         //notify();
-        while(Main.buffer.responseBufferFull == false){
-            //wait();
-            Thread.sleep(1000);
+        while (Main.buffer.responseBufferFull == false) {
+             //wait();
+             Thread.sleep(1000);
         }
-        int response = Main.buffer.responseBuffer.poll();
+        response = Main.buffer.responseBuffer.poll();
         System.out.println(response);
-        if(response == 0){
+        if (response == 0) {
             System.out.println("Customer Credit Card is invalid");
-        }
-        else {
+
+            root = FXMLLoader.load(getClass().getResource("UpdateCreditCard.fxml"));
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+
+
+
+        } else {
             System.out.println("Credit Card successfully Charged");
-            //System.out.println(response);
+            isOrderplaced = true;
         }
 
         Main.buffer.responseBufferFull = false;
         Main.buffer.messageBufferFull = false;
-        //Thread.sleep(1000);
+            //Thread.sleep(1000);
+        if(response!=0) {
+            MakeOrderInFile temp = new MakeOrderInFile(customer.ID, String.valueOf(response), "ordered", totalCost, String.valueOf(java.time.LocalDate.now()),customer.CreditCardNo,cart);
+            cart.clear();
+        }
+
+
     }
 
     public void ExitApp(javafx.event.ActionEvent actionEvent) throws IOException {
         Main.buffer.endCond = true;
         Platform.exit();
+    }
+
+    public void ViewStockSupplier(javafx.event.ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("ViewStockSupplier.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void BackToSupplierPage(javafx.event.ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("SupplierPage.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void LoadStock(javafx.event.ActionEvent actionEvent) throws IOException {
+        Item temp = new Item();
+        List<Item> stock = new LinkedList<>();
+        List<Item> reservedStock = new LinkedList<>();
+        stock = temp.getListItems();
+        reservedStock = temp.getListReservedItems();
+
+        System.out.println(stock.size() +" "+ reservedStock.size());
+
+        for (int i = 0; i < stock.size(); i++) {
+            StockItems.getItems().add(stock.get(i).Name);
+            StockItemsAmount.getItems().add(stock.get(i).Quantity);
+        }
+
+        for (int i = 0; i < reservedStock.size(); i++) {
+            ReservedStockItems.getItems().add(reservedStock.get(i).Name);
+            ReservedStockItemsAmount.getItems().add(reservedStock.get(i).Quantity);
+        }
+    }
+
+    public void GoToProcessOrder(javafx.event.ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("ProcessOrder.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void LoadOrderedOrders(javafx.event.ActionEvent actionEvent) throws IOException {
+        Order temp = new Order();
+        LinkedList<Order> orderedOrders = new LinkedList<>();
+        orderedOrders = temp.getListOrderByOrderStatus("ordered");
+
+        orders.getItems().clear();
+
+
+        if(InsufficientStock.isVisible() == true) {
+            InsufficientStock.setVisible(false);
+        }
+        if(OrderPlaced.isVisible() == true) {
+            OrderPlaced.setVisible(false);
+        }
+
+        for (int i = 0; i < orderedOrders.size(); i++){
+            orders.getItems().add(orderedOrders.get(i).orderNo);
+        }
+
+    }
+
+    public void ProcessOrder(javafx.event.ActionEvent actionEvent) throws IOException {
+        String selectedOrder = orders.getSelectionModel().getSelectedItem();
+
+        Order orderToProcess = new Order();
+        LinkedList<Order> orderedOrders = new LinkedList<>();
+        orderedOrders = orderToProcess.getListOrderByOrderStatus("ordered");
+
+        for (int i = 0; i < orderedOrders.size(); i++){
+            if(orderedOrders.get(i).orderNo.equals(selectedOrder)){
+                orderToProcess = orderedOrders.get(i);
+            }
+        }
+
+        Item temp = new Item();
+        List<Item> stock = new LinkedList<>();
+        stock = temp.getListItems();
+        boolean IsOutofStock = false;
+
+        for (int i = 0; i < orderToProcess.Items.size(); i++){
+            for (int j = 0; j < stock.size(); j++){
+                if(orderToProcess.Items.get(i).Name.equals(stock.get(j).Name)){
+                    if(Integer.valueOf(orderToProcess.Items.get(i).Quantity)<=Integer.valueOf(stock.get(j).Quantity)){
+
+                    }
+                    else {
+                        IsOutofStock = true;
+                        System.out.println("Insufficient Stock");
+                        InsufficientStock.setVisible(true);
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        if(IsOutofStock == false){
+            OrderPlaced.setVisible(true);
+        }
+
+        if(IsOutofStock == false) {
+            for (int i = 0; i < orderToProcess.Items.size(); i++) {
+                for (int j = 0; j < stock.size(); j++) {
+                    if (orderToProcess.Items.get(i).Name.equals(stock.get(j).Name)) {
+                        if (Integer.valueOf(orderToProcess.Items.get(i).Quantity) <= Integer.valueOf(stock.get(j).Quantity)) {
+                            int newAmt = -Integer.valueOf(orderToProcess.Items.get(i).Quantity);
+                            int restockAmt = Integer.valueOf(orderToProcess.Items.get(i).Quantity);
+                            Update_quantity temp1 = new Update_quantity();
+                            temp1.update_stock(orderToProcess.Items.get(i).Name, String.valueOf(newAmt));
+                            temp1.update_reserved_stock(orderToProcess.Items.get(i).Name, String.valueOf(restockAmt));
+                            System.out.println("Remaining stock:" + newAmt);
+                        } else {
+                            System.out.println("Insufficient Stock");
+                        }
+                    }
+                }
+            }
+        }
+
+        if(IsOutofStock == false) {
+            UpdateOrder orderUpdater = new UpdateOrder();
+            orderUpdater.convert_status(selectedOrder, "ready");
+        }
+
+
+    }
+
+    public void GoToShipOrder(javafx.event.ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("ShipOrder.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void LoadReadyOrders(javafx.event.ActionEvent actionEvent) throws IOException {
+        Order temp = new Order();
+        LinkedList<Order> orderedOrders = new LinkedList<>();
+        orderedOrders = temp.getListOrderByOrderStatus("ready");
+
+        if(OrderPlaced.isVisible() == true){
+            OrderPlaced.setVisible(false);
+        }
+
+        orders.getItems().clear();
+
+        for (int i = 0; i < orderedOrders.size(); i++){
+            orders.getItems().add(orderedOrders.get(i).orderNo);
+        }
+
+    }
+
+    public void ShipOrder(javafx.event.ActionEvent actionEvent) throws IOException {
+
+        String selectedOrder = orders.getSelectionModel().getSelectedItem();
+
+        Order orderToProcess = new Order();
+        LinkedList<Order> readyOrders = new LinkedList<>();
+        readyOrders = orderToProcess.getListOrderByOrderStatus("ready");
+
+        for (int i = 0; i < readyOrders.size(); i++){
+            if(readyOrders.get(i).orderNo.equals(selectedOrder)){
+                orderToProcess = readyOrders.get(i);
+            }
+        }
+
+        Item temp = new Item();
+        List<Item> stock = new LinkedList<>();
+        stock = temp.getListItems();
+        boolean IsOutofStock = false;
+
+
+        for (int i = 0; i < orderToProcess.Items.size(); i++) {
+            for (int j = 0; j < stock.size(); j++) {
+                if (orderToProcess.Items.get(i).Name.equals(stock.get(j).Name)) {
+                        int restockAmt = -Integer.valueOf(orderToProcess.Items.get(i).Quantity);
+                        Update_quantity temp1 = new Update_quantity();
+                        temp1.update_reserved_stock(orderToProcess.Items.get(i).Name, String.valueOf(restockAmt));
+                        System.out.println("Remaining stock:" + restockAmt);
+                }
+            }
+        }
+
+        UpdateOrder orderUpdater = new UpdateOrder();
+        OrderPlaced.setVisible(true);
+        orderUpdater.convert_status(selectedOrder, "shipped");
+
+    }
+
+    public void GoToViewInvoice(javafx.event.ActionEvent actionEvent) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("UserInvoice.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void LoadInvoiceOrders(javafx.event.ActionEvent actionEvent) throws IOException {
+        LinkedList<Order> UserOrders = new LinkedList<>();
+        GetUserOrders temp = new GetUserOrders();
+
+        UserOrders = temp.getOrder(customer.ID);
+
+        orders.getItems().clear();
+
+        for (int i = 0; i < UserOrders.size(); i++) {
+            orders.getItems().add(UserOrders.get(i).orderNo);
+        }
+    }
+    public void LoadInvoicePage(javafx.event.ActionEvent actionEvent) throws IOException {
+        CurrentOrder = orders.getSelectionModel().getSelectedItem();
+
+        root = FXMLLoader.load(getClass().getResource("InvoiceDetails.fxml"));
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+
+    public void ViewInvoiceDetails(javafx.event.ActionEvent actionEvent) throws IOException {
+        LinkedList<Order> UserOrders = new LinkedList<>();
+        Order temp = new Order();
+        UserOrders = temp.getOrder(customer.ID);
+
+        orderItems.getItems().clear();
+        orderItemsAmount.getItems().clear();
+
+        Order currOrder = new Order();
+
+
+        for (int i = 0; i < UserOrders.size(); i++) {
+            if(CurrentOrder.equals(UserOrders.get(i).orderNo)){
+                currOrder = UserOrders.get(i);
+            }
+        }
+
+        //System.out.println("#$#@");
+        System.out.println(currOrder.orderStatus +" "+currOrder.totalPricePaid);
+        OrderCreditCard.setText(currOrder.creditCardNo);
+        TotalPrice.setText(currOrder.totalPricePaid);
+        OrderDate.setText(currOrder.date);
+
+        for (int i = 0; i < currOrder.Items.size(); i++) {
+            orderItems.getItems().add(currOrder.Items.get(i).Name);
+            orderItemsAmount.getItems().add(currOrder.Items.get(i).Quantity);
+        }
+
     }
 
 
@@ -566,16 +926,16 @@ class returnArrays {
         Item item = new Item();
         List<Item> items = new ArrayList<Item>();
         items = item.getListItems();
-        int i=0, x=0;
+        int i=0, x=0, j=0;
 
-        for (Item im : items) {
+        for (i=1 ; i<items.size();i++) {
             x++;
         }
         String[] array1 = new String[x];
 
-        for (Item im : items) {
-            array1[i] = im.Name;
-            i++;
+        for (i=1 ; i<items.size();i++) {
+            array1[j] = items.get(i).Name;
+            j++;
         }
 
         return array1;
@@ -586,16 +946,16 @@ class returnArrays {
         Item item = new Item();
         List<Item> items = new ArrayList<Item>();
         items = item.getListItems();
-        int i=0,x=0;
+        int i=0,x=0,j=0;
 
-        for (Item im : items) {
+        for (i=1 ; i<items.size();i++) {
             x++;
         }
         String[] array1 = new String[x];
 
-        for (Item im : items) {
-            array1[i] = im.Description;
-            i++;
+        for (i=1 ; i<items.size();i++) {
+            array1[j] = items.get(i).Description;
+            j++;
         }
 
         return array1;
@@ -606,16 +966,16 @@ class returnArrays {
         Item item = new Item();
         List<Item> items = new ArrayList<Item>();
         items = item.getListItems();
-        int i=0,x=0;
+        int i=0,x=0,j=0;
 
-        for (Item im : items) {
+        for (i=1 ; i<items.size();i++) {
             x++;
         }
         String[] array1 = new String[x];
 
-        for (Item im : items) {
-            array1[i] = im.RegularPrice;
-            i++;
+        for (i=1 ; i<items.size();i++) {
+            array1[j] = items.get(i).RegularPrice;
+            j++;
         }
 
         return array1;
@@ -626,16 +986,16 @@ class returnArrays {
         Item item = new Item();
         List<Item> items = new ArrayList<Item>();
         items = item.getListItems();
-        int i=0,x=0;
+        int i=0,x=0,j=0;
 
-        for (Item im : items) {
+        for (i=1 ; i<items.size();i++) {
             x++;
         }
         String[] array1 = new String[x];
 
-        for (Item im : items) {
-            array1[i] = im.PremiumPrice;
-            i++;
+        for (i=1 ; i<items.size();i++) {
+            array1[j] = items.get(i).PremiumPrice;
+            j++;
         }
 
         return array1;

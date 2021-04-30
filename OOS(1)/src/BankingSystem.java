@@ -11,20 +11,24 @@ public class BankingSystem implements Runnable{
             }
             System.out.println("Reached here");
             if(Main.buffer.endCond == true){return;}
-            String receivedCreditCardNo = Main.buffer.messageBuffer.poll();
+            CreditCard receivedCreditCard = Main.buffer.messageBuffer.poll();
             Main.buffer.messageBufferFull = false;
 
             CreditCard temp = new CreditCard();
-            boolean found;
-            found = temp.getCreditCard(receivedCreditCardNo);
-            System.out.println(receivedCreditCardNo);
-            System.out.println(found);
+            CreditCard temp1 = new CreditCard();
+            //boolean found;
+            temp1 = temp.getCreditCard(receivedCreditCard.CreditCardNo);
 
-            if (found == true) {
+            System.out.println(receivedCreditCard);
+            //System.out.println(found);
+
+            if (temp1.CreditCardNo.equals(receivedCreditCard.CreditCardNo) && Float.valueOf(temp1.CreditLimit) > Float.valueOf(receivedCreditCard.CreditLimit)) {
                 //System.out.println("Credit Card successfully Charged");
                 Random random = new Random();
-                int temp1 = random.nextInt(9999 - 1000) + 1000;
-                Main.buffer.responseBuffer.add(temp1);
+                int orderID = random.nextInt(9999 - 1000) + 1000;
+                credit_charge new1 = new credit_charge();
+                new1.credit_subtract(receivedCreditCard.CreditCardNo, receivedCreditCard.CreditLimit);
+                Main.buffer.responseBuffer.add(orderID);
             } else {
                 //System.out.println("Customer Credit Card is invalid");
                 Main.buffer.responseBuffer.add(0);

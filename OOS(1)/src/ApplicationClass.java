@@ -21,7 +21,7 @@ public class ApplicationClass extends Application{
     public void start(Stage primaryStage) throws Exception {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
-            primaryStage.setTitle("Hello World!");
+            primaryStage.setTitle("Online Shopping System (OOS)");
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -29,12 +29,15 @@ public class ApplicationClass extends Application{
             e.printStackTrace();
         }
     }
-    /*
-    public static void main1(String[] args) {
+
+    public static void main(String[] args) {
         Buffer buffer = new Buffer();
-        Thread bankingSystem = new Thread( new BankingSystem());
-        launch(args);
-    }*/
+        BankingSystem banking = new BankingSystem();
+        Thread bankingSystem = new Thread(banking);
+        bankingSystem.start();
+
+        Application.launch(args);
+    }
 
 
 }

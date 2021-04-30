@@ -20,8 +20,11 @@ class CreditCard {
         this.CreditLimit = " ";
     }
 
-    boolean getCreditCard(String CreditCardNo) {
+
+
+    CreditCard getCreditCard(String CreditCardNo) {
         boolean found = false;
+        CreditCard temp = new CreditCard();
         try {
             String CreditCard="";
 
@@ -35,7 +38,7 @@ class CreditCard {
                 if (CreditCard_array[0].equals(CreditCardNo)) {
                     this.CreditCardNo= CreditCard_array[0];
                     this.CreditLimit = CreditCard_array[1];
-                    found=true;
+                    temp = this;
                     break;
                 }
             }
@@ -48,7 +51,7 @@ class CreditCard {
         }
 
         System.out.println("Data retrieved successfully");
-        return found;
+        return temp;
     }
 
     void setCreditCard() {
@@ -190,6 +193,37 @@ class Item{
             String item="";
 
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
+            Scanner inputFile = new Scanner(file);
+
+            while(inputFile.hasNext())
+            {
+                Item i = new Item();
+                item = inputFile.nextLine();
+                String item_array[] = item.split(",");
+                i.PrimaryKey = item_array[0];
+                i.Name = item_array[1];
+                i.RegularPrice = item_array[2];
+                i.PremiumPrice = item_array[3];
+                i.Quantity = item_array[4];
+                i.Description = item_array[5];
+                items.add(i);
+            }
+            inputFile.close();
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+
+        System.out.println("Data retrieved successfully");
+        return items;
+    }
+
+    List<Item> getListReservedItems() {
+        List<Item> items = new ArrayList<Item>();
+        try {
+            String item="";
+
+            File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\ReservedStock.txt");
             Scanner inputFile = new Scanner(file);
 
             while(inputFile.hasNext())
@@ -366,6 +400,8 @@ class Order {
     String orderNo;
     String orderStatus;
     String totalPricePaid;
+    String date;
+    String creditCardNo;
     LinkedList<Item> Items;
 
 
@@ -379,34 +415,93 @@ class Order {
         Items = new LinkedList<>();
     }
 
-    void getOrder(String ID) {
+    public LinkedList<Order> getOrder(String ID) {
         try {
-            String order="";
-            int i=0;
-            int j=0;
-            int k=0;
-            String[] items = new String[20];
-            String[] quantities = new String[20];
+            String order;
+
+            File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
+            Scanner inputFile = new Scanner(file);
+            LinkedList<Order> user_orders = new LinkedList<>();
+            while(inputFile.hasNext())
+            {
+                Order tempO = new Order();
+                Item temp = new Item();
+                order = inputFile.nextLine();
+                String[] order_array = order.split(",");
+                if (order_array[0].equals(ID)) {
+                    String elements;
+                    tempO.ID= order_array[0];
+                    tempO.orderNo = order_array[1];
+                    tempO.orderStatus = order_array[2];
+                    tempO.totalPricePaid = order_array[3];
+                    tempO.date = order_array[4];
+                    tempO.creditCardNo = order_array[5];
+                    elements = order_array[6];
+                    //System.out.println(elements);
+                    String[] elements_array = elements.split(";");
+                    int n = elements_array.length;
+                    for(int l = 1; l<= n;l++){
+                        Item temp2 = new Item();
+                        if( l%2== 1) {
+                            temp.getItem(elements_array[l-1]);
+                            //temp.printItem();
+
+                        }
+                        if(l%2== 0 ){
+                            temp.Quantity= elements_array[l-1];
+                            temp2.Quantity= temp.Quantity;
+                            temp2.PremiumPrice= temp.PremiumPrice;
+                            temp2.Name = temp.Name;
+                            temp2.RegularPrice = temp.RegularPrice;
+                            temp2.Description = temp.Description;
+                            temp2.PrimaryKey= temp.PrimaryKey;
+                            //temp.printItem();
+                            tempO.Items.add(temp2);
+                        }
+                    }
+                    user_orders.add(tempO);
+                }
+
+            }
+            inputFile.close();
+            return user_orders;
+
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+        return new LinkedList<>();
+    }
+    LinkedList<Order> getListOrderByOrderStatus(String status) {
+        LinkedList<Order> orders = new LinkedList<>();
+        try {
 
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             Scanner inputFile = new Scanner(file);
 
             while(inputFile.hasNext())
             {
+                String order="";
+                int i=0;
+                int j=0;
+                int k=0;
+                String[] items = new String[20];
+                String[] quantities = new String[20];
+                Order o = new Order();
                 order = inputFile.nextLine();
                 String order_array[] = order.split(",");
-                if (order_array[0].equals(ID)) {
-                    String elements="";
-                    this.ID= order_array[0];
-                    this.orderNo = order_array[1];
-                    this.orderStatus = order_array[2];
-                    this.totalPricePaid = order_array[3];
-                    elements = order_array[4];
-                    System.out.println(elements);
+
+                if (order_array[2].equals(status)) {
+                    o.ID = order_array[0];
+                    o.orderNo = order_array[1];
+                    o.orderStatus = order_array[2];
+                    o.totalPricePaid = order_array[3];
+                    o.date = order_array[4];
+                    o.creditCardNo = order_array[5];
+                    String elements = order_array[6];
                     String elements_array[] = elements.split(";");
                     for(String element : elements_array ) {
                         if (i%2==0) {
-                            System.out.println(element);
                             items[j] = element;
                             j++;
                         }
@@ -421,23 +516,22 @@ class Order {
                         Item im = new Item();
                         im.getItem(items[k]);
                         im.Quantity = quantities[k];
-                        Items.add(im);
+                        o.Items.add(im);
                     }
-
-                    break;
+                    orders.add(o);
                 }
             }
-
             inputFile.close();
         }
-
         catch (IOException e) {
             System.out.println(e);
         }
+
+        return orders;
     }
 
     void printOrder() {
-        System.out.println("Cunstomer ID: " + this.ID);
+        System.out.println("Customer ID: " + this.ID);
         System.out.println("Order No: " + this.orderNo);
         System.out.println("orderStatus: " + this.orderStatus);
         System.out.println("Total Price Paid: " + this.totalPricePaid);
