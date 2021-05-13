@@ -49,17 +49,17 @@ class Customer {
     void setCustomer(boolean n) {
         String customer;
         //Open the file to print data to Customers database "Customers.txt"
-        try {
+        try {                                       //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt");
             customer = (this.ID + "," + this.Password + "," + this.Name + "," + this.Address + "," + this.PhoneNo + "," + this.CreditCardNo + "," + this.MembershipType + "\r") ;
             if(!outputFile.exists() || n) {
-                outputFile.createNewFile();
+                outputFile.createNewFile();                     //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
                 FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt");
                 fileWriter.write(customer);
                 fileWriter.close();
             }
 
-            else {
+            else {                                              //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
                 FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt", true);
                 BufferedWriter bw = new BufferedWriter(fileWriter);
                 //Write data of customer in CSV format
@@ -85,7 +85,7 @@ class Customer {
         List<Customer> customers = new ArrayList<Customer>();
         try {
             String customer="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -133,7 +133,7 @@ class Customer {
     void getCustomer(String ID) {
         try {
             String customer="";
-
+                                        //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -168,12 +168,12 @@ class Customer {
     void setCustomer() {
         String customer;
         //Open the file to print data to Customers database "Customers.txt"
-        try {
+        try {                                       //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt");
             if(!outputFile.exists()) {
                 outputFile.createNewFile();
             }
-
+                                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Customers.txt", true);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             //Write data of customer in CSV format
@@ -241,7 +241,7 @@ class GetUserOrders {
     public LinkedList<Order> getOrder(String ID) {
         try {
             String order;
-
+                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             Scanner inputFile = new Scanner(file);
             LinkedList<Order> user_orders = new LinkedList<>();
@@ -302,15 +302,15 @@ class MakeOrderInFile extends Order {
         this.ID = id; this.orderNo = orderNo; this.totalPricePaid= totalPricePaid; this.orderStatus= orderStatus;
         this.Items = items; this.orderStatus = orderstatus; boolean ans = false;  this.date = date; this.creditCardNo = CreditCard;
         StringBuilder Order; int x = 0;
-        try {
+        try {                                   //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             if(!outputFile.exists()) {
                 outputFile.createNewFile();
-            }
+            }                                                  //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt", true);
             BufferedWriter bw = new BufferedWriter(fileWriter);
 
-            Order = new StringBuilder(("\n"+this.ID + "," + this.orderNo + "," + this.orderStatus + "," + this.totalPricePaid + ","+this.date+","+this.creditCardNo+","));
+            Order = new StringBuilder((this.ID + "," + this.orderNo + "," + this.orderStatus + "," + this.totalPricePaid + ","+this.date+","+this.creditCardNo+","));
             do{
                 ans = Items.isEmpty();
                 if(ans == true){
@@ -327,6 +327,7 @@ class MakeOrderInFile extends Order {
                 }
                 x++;
             }while(ans == false);
+            Order.append("\n");
 
             if (this.ID != " ") {
                 bw.write(Order.toString());
@@ -370,7 +371,7 @@ class Update_quantity{
     {
         try {
             String updatequant="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -397,7 +398,7 @@ class Update_quantity{
             System.out.println(e);
         }
 
-        try{
+        try{                    //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             String filePath = "C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt";
             Scanner sc = new Scanner(new File(filePath));
             StringBuffer buffer = new StringBuffer();
@@ -434,7 +435,7 @@ class Update_quantity{
     {
         try {
             String updatequant="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\ReservedStock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -461,7 +462,7 @@ class Update_quantity{
             System.out.println(e);
         }
 
-        try{
+        try{                        //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             String filePath = "C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\ReservedStock.txt";
             Scanner sc = new Scanner(new File(filePath));
             StringBuffer buffer = new StringBuffer();
@@ -525,7 +526,7 @@ class UpdateOrder {
 
         try {
             String updateorder="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -554,7 +555,7 @@ class UpdateOrder {
         }
 
         try {
-            System.out.println("Data retrieved successfully");
+            System.out.println("Data retrieved successfully");  //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             String filePath = "C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt";
             Scanner sc = new Scanner(new File(filePath));
             StringBuffer buffer = new StringBuffer();
@@ -570,7 +571,7 @@ class UpdateOrder {
 
             //System.out.println( Oldstring);
             this.Status = status;
-            System.out.println(status);
+            //System.out.println(status);
 
             String Newstring = (this.ID + "," + this.OrderID+ "," + status+ "," +this.TotalPrice+ "," +this.date+","+this.creditCard+"," +this.Itemlist);
 
@@ -609,7 +610,7 @@ class credit_charge{
     {
         try {
             String credit_charge="";
-
+                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\CreditCards.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -632,7 +633,7 @@ class credit_charge{
             System.out.println(e);
         }
 
-        try{
+        try{                    //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             String filePath = "C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\CreditCards.txt";
             Scanner sc = new Scanner(new File(filePath));
             StringBuffer buffer = new StringBuffer();

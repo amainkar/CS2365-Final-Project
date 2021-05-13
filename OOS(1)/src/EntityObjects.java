@@ -27,7 +27,7 @@ class CreditCard {
         CreditCard temp = new CreditCard();
         try {
             String CreditCard="";
-
+                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\CreditCards.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -57,12 +57,12 @@ class CreditCard {
     void setCreditCard() {
         String CreditCard;
         //Open the file to print data to CreditCards database "CreditCards.txt"
-        try {
+        try {                                       //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\CreditCards.txt");
             if(!outputFile.exists()) {
                 outputFile.createNewFile();
             }
-
+                                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\CreditCards.txt", true);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             //Write data of CreditCard in CSV format
@@ -114,7 +114,7 @@ class Item{
     void getItem(String PrimaryKey) {
         try {
             String item="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -155,17 +155,17 @@ class Item{
     void setItem(boolean n) {
         String item;
         //Open the file to print data to Items database "Items.txt"
-        try {
+        try {                                       //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
             item = (this.PrimaryKey + "," +  this.Name  + "," +this.RegularPrice + "," + this.PremiumPrice + "," + this.Quantity + "," + this.Description + "\r") ;
             if(!outputFile.exists() || n) {
-                outputFile.createNewFile();
+                outputFile.createNewFile();                         //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
                 FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
                 fileWriter.write(item);
                 fileWriter.close();
             }
 
-            else {
+            else {                                                  //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
                 FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt", true);
                 BufferedWriter bw = new BufferedWriter(fileWriter);
                 //Write data of item in CSV format
@@ -191,7 +191,7 @@ class Item{
         List<Item> items = new ArrayList<Item>();
         try {
             String item="";
-
+                                                    //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -222,7 +222,7 @@ class Item{
         List<Item> items = new ArrayList<Item>();
         try {
             String item="";
-
+                                                    //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\ReservedStock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -253,7 +253,7 @@ class Item{
         List<Item> items = new ArrayList<Item>();
         try {
             String item="";
-
+                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Stock.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -330,7 +330,7 @@ class Supplier {
     void getSupplier(String ID) {
         try {
             String Supplier="";
-
+                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Suppliers.txt");
             Scanner inputFile = new Scanner(file);
 
@@ -358,12 +358,12 @@ class Supplier {
     void setSupplier() {
         String Supplier;
         //Open the file to print data to Suppliers database "Suppliers.txt"
-        try {
+        try {                                       //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File outputFile = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Suppliers.txt");
             if(!outputFile.exists()) {
                 outputFile.createNewFile();
             }
-
+                                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             FileWriter fileWriter = new FileWriter("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Suppliers.txt", true);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             //Write data of Supplier in CSV format
@@ -418,7 +418,7 @@ class Order {
     public LinkedList<Order> getOrder(String ID) {
         try {
             String order;
-
+                                                //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             Scanner inputFile = new Scanner(file);
             LinkedList<Order> user_orders = new LinkedList<>();
@@ -475,7 +475,7 @@ class Order {
     LinkedList<Order> getListOrderByOrderStatus(String status) {
         LinkedList<Order> orders = new LinkedList<>();
         try {
-
+                                                            //Change filepath to local filepath before running!!!! otherwise code will not run!!!!
             File file = new File("C:\\Users\\athar\\OneDrive\\Documents\\CS 2365\\Project stuff\\OOS(1)\\src\\Orders.txt");
             Scanner inputFile = new Scanner(file);
 

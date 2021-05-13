@@ -19,7 +19,7 @@ public class BankingSystem implements Runnable{
             //boolean found;
             temp1 = temp.getCreditCard(receivedCreditCard.CreditCardNo);
 
-            System.out.println(receivedCreditCard);
+            //System.out.println(receivedCreditCard);
             //System.out.println(found);
 
             if (temp1.CreditCardNo.equals(receivedCreditCard.CreditCardNo) && Float.valueOf(temp1.CreditLimit) > Float.valueOf(receivedCreditCard.CreditLimit)) {

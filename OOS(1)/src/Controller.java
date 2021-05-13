@@ -473,7 +473,7 @@ public class Controller {
             }
         }
 
-        System.out.println("#$#@");
+        //System.out.println("#$#@");
         System.out.println(currOrder.orderStatus +" "+currOrder.totalPricePaid);
         orderStatus.setText(currOrder.orderStatus);
         TotalPrice.setText(currOrder.totalPricePaid);
